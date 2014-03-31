@@ -245,6 +245,38 @@ class AAExt(Edit, recordtype.recordtype('AAExt', [('ref',None),('alt',None), ('a
         return 'ext'
 
 
+AAPTM_SUBTYPES = ('change', 'substitution', 'mass', 'cleavage')
+
+class AAPtm(Edit, recordtype.recordtype('AAPtm', [('subtype',None),('mod',None)])):
+    def __init__(self, subtype, mod=None):
+        if subtype not in AAPTM_SUBTYPES:
+            raise HGVSError("invalid AAPtm subtype '%s'" % subtype)
+        if subtype != 'cleavage' and mod is None:
+            raise HGVSError("mod required for AAPtm subtype '%s'" % subtype)
+        if subtype == 'cleavage' and mod is not None:
+            raise HGVSError("mod not allowed for AAPtm subtype '%s'" % subtype)
+        super(AAPtm, self).__init__(subtype, mod)
+
+    def format_mod(self):
+        if self.subtype == 'change':
+            return '+%s' % self.mod
+        elif self.subtype == 'substitution':
+            return '=%s' % self.mod
+        elif self.subtype == 'mass':
+            return '#%s' % self.mod
+        elif self.subtype == 'cleavage':
+            return '*'
+        else:
+            raise RuntimeError('invalid AAPtm subtype: %s' % self.subtype)
+
+    def __str__(self):
+        return 'mod' + self.format_mod()
+
+    @property
+    def type(self):
+        return 'mod'
+
+
 class Dup( Edit, recordtype.recordtype('Dup', [('seq',None),('uncertain',False)]) ):
 
     def __str__(self):
