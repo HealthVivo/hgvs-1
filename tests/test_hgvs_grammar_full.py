@@ -82,7 +82,8 @@ class TestGrammarFull(unittest.TestCase):
                     function_to_test = getattr(self.p._grammar(key), row['Func'])
                     row_str = u"{}\t{}\t{}\t{}\t{}".format(row['Func'], key, row['Valid'], 'one', expected_result)
                     try:
-                        actual_result = unicode(function_to_test())
+                        args = row['Args'].split('|') if row['Args'] is not None else []
+                        actual_result = unicode(function_to_test(*args))
                         if not is_valid or (expected_result != actual_result):
                             print( "expected: {} actual:{}".format(expected_result, actual_result) )
                             fail_cases.append(row_str)

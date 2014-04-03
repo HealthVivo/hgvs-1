@@ -18,6 +18,10 @@ class Test_Edit_AAPtm(unittest.TestCase):
                 edit = str(hgvs.edit.AAPtm(subtype, None))
         with self.assertRaises(HGVSError):
             edit = str(hgvs.edit.AAPtm('cleavage', 'xxx'))
+        bad_edit = hgvs.edit.AAPtm('change', '+a')
+        bad_edit.subtype = 'xxx'
+        with self.assertRaises(RuntimeError):
+            edit = str(bad_edit)
 
     def test_AAPtm(self):
         e_chg = hgvs.edit.AAPtm('change', 'Phospho')

@@ -284,7 +284,7 @@ digit1_9 = :x ?(x in '123456789') -> x
 int_part = (digit1_9:first digits:rest -> first + rest) | digit
 float_part :sign :ds = <('.' digits exponent?) | exponent>:tail
                      -> float(sign + ds + tail)
-exponent = ('e' | 'E') ('+' | '-')? digits
+exponent = <('e' | 'E') ('+' | '-')? digits>
 
 # Accessions, possibly versioned. Should accept, e.g., NM_01234.5, LRG_01234_1p1
 accn = <letter letterOrDigit+ ('_' letterOrDigit+)? ('.' digit+)?>

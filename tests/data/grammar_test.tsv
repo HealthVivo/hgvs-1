@@ -1,4 +1,4 @@
-Func	Test	Valid	InType	Expected
+Func	Test	Valid	InType	Expected	Args
 Not_Yet_Implemented	NOT YET IMPLEMENTED	True	one	
 Not_Yet_Implemented	foobar	False	one	
 ############################################################
@@ -94,6 +94,20 @@ rna_seq	T|t|TT|ACT|TAC	False	list
 dna_seq	ACGTacgt	True	string	
 dna_seq	AA|Aa|aA|tA|Ta|ACGTacgt	True	list	
 dna_seq	U|u|UU|ACU|UAC	False	list	
+number	-123.456e-10|123.456e+10|0|1|-1|1.2|-1.2|1.	True	list	-1.23456e-08|1.23456e+12|0|1|-1|1.2|-1.2|1.0
+number	x|01|+	False	list
+digit	0123456789	True	string
+digit	!@#$abcDEF	False	string
+digits	0123456789      True	one
+digits	                True	one
+digits	0123456789!	False	one
+digit1_9	123456789	True	string
+digit1_9	0!@#$abcDEF	False	string
+int_part	0|1|12|123	True	list
+int_part	00|01|1x	False	list
+float_part	.456e-2|.456e+2|.2|.	True	list	0.00456|45.6|0.2|0.0	|0
+exponent	e1|e01|E1|E01|e+01|e-01|E+01|E-01	True	list
+exponent	1|f1|e*1	False	list
 ############################################################
 ## Locations
 def_p_pos	Met1|Gly10|Ter10	True	list	
@@ -196,7 +210,7 @@ rna_subst	A>T	False	one
 rna_edit	A>C|delAAinsC|insA|delA|dupA	True	list
 rna_edit	A>T|del5A	False	list	
 rna_edit_mu	A>C	True	one
-rna_edit_mu	(A>C)	True	one		
+rna_edit_mu	(A>C)	True	one	
 dna_dup	dup|dupA|dupCAG|dupCAT	True	list	
 dna_dup	dupCAU	False	one
 dna_ins	insA|insC|insG|insT	True	list	
@@ -285,3 +299,14 @@ dna_edit	copy1|copy2|copy3|dup3|dup55	True	list
 c_variant	NM_000352.3:c.2557_2694copy2	True	one     
 c_variant	NM_015702.2:c.307_324dup18	True	one     
 g_variant	NC_000014.8:g.88401076_88459508copy4	True	one
+############################################################
+## Protein post-translational modifications
+pm_variant	P00519:pm.Thr315Ile|P00519:pm.Tyr393mod+Phospho|P00519:pm.Tyr393mod=MOD:00048|P00519:pm.Tyr393mod#79.96633|P00519:pm.Asp939mod*	True	list
+pm_posedit	Thr315Ile|Tyr393mod+Phospho|Tyr393mod=MOD:00048|Tyr393mod#79.96633|Asp939mod*	True	list
+promod_edit	Ile|mod+Phospho|mod=MOD:00048|mod#79.96633|mod*	True	list
+promod_mod	mod+Phospho|mod=MOD:00048|mod#79.96633|mod*	True	list
+ptm	+Phospho|=MOD:00048|#79.96633|*	True	list	('change', 'Phospho')|('substitution', 'MOD:00048')|('mass', 79.96633)|('cleavage', None)
+ptm_chg	+Phospho	True	one	('change', 'Phospho')
+ptm_sub	=MOD:00048	True	one	('substitution', 'MOD:00048')
+ptm_mass	#79.96633	True	one	('mass', 79.96633)
+ptm_clv	*	True	one	('cleavage', None)
