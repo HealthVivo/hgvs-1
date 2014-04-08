@@ -5,9 +5,9 @@ import recordtype
 
 class PosEdit( recordtype.recordtype( 'PosEdit', [('pos',None),('edit',None),('uncertain',False)] )):
     """
-    represents a **simple** variant, consisting of a single position and edit pair
+    Represents a simple variant, i.e. one change to one allele.
     """
-    
+
     def __str__(self):
         rv = str(self.edit) if self.pos is None else '{self.pos}{self.edit}'.format(self=self)
         if self.uncertain:
@@ -24,7 +24,24 @@ class PosEdit( recordtype.recordtype( 'PosEdit', [('pos',None),('edit',None),('u
         """
         self.uncertain = True
         return self
-    
+
+class PosEditSet( recordtype.recordtype( 'PosEditSet', [('posedits', [])] )):
+    """
+    Represents several PosEdits, i.e. multiple changes to one allele.
+    """
+
+    def __getitem__(self, i):
+        return self.posedits[i]
+
+    def __setitem__(self, i, value):
+        self.posedits[i] = value
+
+    def __len__(self):
+        return len(self.posedits)
+
+    def __str__(self):
+        return ';'.join(map(str, self.posedits))
+
 
 ## <LICENSE>
 ## Copyright 2014 HGVS Contributors (https://bitbucket.org/hgvs/hgvs)
