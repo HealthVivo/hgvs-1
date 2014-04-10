@@ -25,10 +25,14 @@ class PosEdit( recordtype.recordtype( 'PosEdit', [('pos',None),('edit',None),('u
         self.uncertain = True
         return self
 
-class PosEditSet( recordtype.recordtype( 'PosEditSet', [('posedits', [])] )):
+class PosEditSet( recordtype.recordtype( 'PosEditSet', [('posedits', []), ('uncertain', False)] )):
     """
     Represents several PosEdits, i.e. multiple changes to one allele.
     """
+
+    def set_uncertain(self):
+        self.uncertain = True
+        return self
 
     def __getitem__(self, i):
         return self.posedits[i]
@@ -40,7 +44,10 @@ class PosEditSet( recordtype.recordtype( 'PosEditSet', [('posedits', [])] )):
         return len(self.posedits)
 
     def __str__(self):
-        return ';'.join(map(str, self.posedits))
+        separator = ';'
+        if self.uncertain:
+            separator = '(' + separator + ')'
+        return separator.join(map(str, self.posedits))
 
 
 ## <LICENSE>
