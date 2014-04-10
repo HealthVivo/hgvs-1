@@ -44,7 +44,8 @@ class SequenceVariant( recordtype.recordtype('SequenceVariant', ['ac','type','po
         if len(self.posedits) == 1:
             return self.posedits[0]
         else:
-            raise ValueError('posedit backwards-compatibility only supported for single-edit variants')
+            raise ValueError('posedit backwards-compatibility only supported '
+                             'for single-edit variants')
 
     def __str__(self):
         return self.to_str()
@@ -69,6 +70,17 @@ COMPLEX_VARIANT_SEPARATOR_MAP = {
 class ComplexVariant ( recordtype.recordtype('ComplexVariant', ['type', 'variants']) ):
     """A container for multiple basic variants."""
 
+    def __init__(self, type, variants):
+        super(ComplexVariant, self).__init__(type, variants)
+        if self.type not in COMPLEX_VARIANT_SEPARATOR_MAP:
+            raise HGVSError("Unknown type for ComplexVariant.")
+        if not self.all_same_type:
+            raise HGVSError("ComplexVariant does not support variants with "
+                            "different types.")
+        if not self.all_same_ac and self.type != 'poly':
+            raise HGVSError("ComplexVariant only supports multiple accession "
+                            "numbers for 'poly' variant types.")
+
     @property
     def all_same_ac(self):
         """Return True if all variants have same accession, otherwise False."""
@@ -82,24 +94,15 @@ class ComplexVariant ( recordtype.recordtype('ComplexVariant', ['type', 'variant
     @property
     def separator(self):
         """Return formatting separator, depending on type."""
-        try:
-            return COMPLEX_VARIANT_SEPARATOR_MAP[self.type]
-        except KeyError:
-            # FIXME: this invariant should probably be checked in __init__
-            raise HGVSError("Unknown type for ComplexVariant.")
+        return COMPLEX_VARIANT_SEPARATOR_MAP[self.type]
 
     def __str__(self):
-        # FIXME: this invariant should probably be checked in __init__
-        if not self.all_same_type:
-            raise HGVSError("ComplexVariant does not support variants with "
-                            "different types.")
         var_type = self.variants[0].type
         if self.all_same_ac:
             var_ac = self.variants[0].ac
+            format_str = '{var_type}.{variants_str}'
             if var_ac is not None:
-                format_str = '{var_ac}:{var_type}.{variants_str}'
-            else:
-                format_str = '{var_type}.{variants_str}'
+                format_str = '{var_ac}:' + format_str
             posedits = [var.to_str_posedits() for var in self.variants]
             variants_str = self.separator.join(map(str, posedits))
             if len(self.variants) > 1:
@@ -107,9 +110,6 @@ class ComplexVariant ( recordtype.recordtype('ComplexVariant', ['type', 'variant
             return format_str.format(var_ac=var_ac, var_type=var_type,
                                      variants_str=variants_str)
         else:
-            if self.type != 'poly':
-                raise HGVSError("ComplexVariant only supports multiple "
-                                "accession numbers for 'poly' variant types.")
             return ';'.join(var.to_str(force_brackets=True)
                             for var in self.variants)
 
