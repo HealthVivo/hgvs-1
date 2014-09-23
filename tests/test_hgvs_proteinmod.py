@@ -1,5 +1,6 @@
 import unittest
 import pprint
+import os
 
 import hgvs.edit
 import hgvs.parser
@@ -55,6 +56,15 @@ class Test_Edit_AAPtm(unittest.TestCase):
                 continue
             v = self.parser._grammar(var).pm_variant()
             self.assertEqual( var, str(v), 'parse-format roundtrip failed:'+pprint.pformat(v.posedit) )
+
+    def test_parser_posedits(self):
+        parser = hgvs.parser.Parser()
+        fn = os.path.join( os.path.dirname(__file__), 'data',
+                           'protein_mod_posedits' )
+        pe_file = open(fn)
+        for pe in pe_file:
+            pe = pe.strip()
+            yield lambda x: parser._grammar(x).pm_posedit(), pe
 
 if __name__ == '__main__':
     unittest.main()
