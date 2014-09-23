@@ -305,8 +305,8 @@ pm_variant	P00519:pm.Thr315Ile|P00519:pm.Tyr393mod+Phospho|P00519:pm.Tyr393mod=M
 pm_posedit	Thr315Ile|Tyr393mod+Phospho|Tyr393mod=MOD:00048|Tyr393mod#79.96633|Asp939mod*	True	list
 promod_edit	Ile|mod+Phospho|mod=MOD:00048|mod#79.96633|mod*	True	list
 promod_mod	mod+Phospho|mod=MOD:00048|mod#79.96633|mod*	True	list
-ptm	+Phospho|=MOD:00048|#79.96633|*	True	list	('change', 'Phospho')|('substitution', 'MOD:00048')|('mass', 79.96633)|('cleavage', None)
-ptm_chg	+Phospho	True	one	('change', 'Phospho')
-ptm_sub	=MOD:00048	True	one	('substitution', 'MOD:00048')
-ptm_mass	#79.96633	True	one	('mass', 79.96633)
-ptm_clv	*	True	one	('cleavage', None)
+ptm	+Phospho|=MOD:00048|#79.96633|*	True	list	(u'change', u'Phospho')|(u'substitution', u'MOD:00048')|(u'mass', 79.96633)|(u'cleavage', None)
+ptm_chg	+Phospho	True	one	(u'change', u'Phospho')
+ptm_sub	=MOD:00048	True	one	(u'substitution', u'MOD:00048')
+ptm_mass	#79.96633	True	one	(u'mass', 79.96633)
+ptm_clv	*	True	one	(u'cleavage', None)

@@ -221,10 +221,10 @@ promod_edit = pro_edit | promod_mod
 promod_mod  = 'mod' ptm:(subtype, change) -> hgvs.edit.AAPtm(subtype, change)
 
 ptm = (ptm_chg|ptm_sub|ptm_mass|ptm_clv)
-ptm_chg = '+' <letter+>:mod -> ('change', mod)
-ptm_sub = '=' <letter+ ':' digit+>:mod -> ('substitution', mod)
-ptm_mass = '#' number:mod -> ('mass', mod)
-ptm_clv = '*' -> ('cleavage', None)
+ptm_chg = '+' <letter+>:mod -> (u'change', mod)
+ptm_sub = '=' <letter+ ':' digit+>:mod -> (u'substitution', mod)
+ptm_mass = '#' number:mod -> (u'mass', mod)
+ptm_clv = '*' -> (u'cleavage', None)
 
 
 ############################################################################
