@@ -26,7 +26,7 @@ class Parser(object):
     >>> hp = Parser()
     >>> v = hp.parse_hgvs_variant("NM_01234.5:c.22+1A>T")
     >>> v
-    SequenceVariant(ac=NM_01234.5, type=c, posedit=22+1A>T)
+    SequenceVariant(ac=NM_01234.5, type=c, posedits=22+1A>T)
     >>> v.posedit.pos
     Interval(start=22+1, end=22+1, uncertain=False)
     >>> i = hp.parse_c_interval('22+1')
@@ -47,16 +47,16 @@ class Parser(object):
     `parse_hgvs_variant()` parses any valid HGVS string supported by the grammar.
 
       >>> hp.parse_hgvs_variant("NM_01234.5:c.22+1A>T")
-      SequenceVariant(ac=NM_01234.5, type=c, posedit=22+1A>T)
+      SequenceVariant(ac=NM_01234.5, type=c, posedits=22+1A>T)
       >>> hp.parse_hgvs_variant('NP_012345.6:p.Ala22Trp')
-      SequenceVariant(ac=NP_012345.6, type=p, posedit=Ala22Trp)
+      SequenceVariant(ac=NP_012345.6, type=p, posedits=Ala22Trp)
 
     The `hgvs_variant` rule iteratively attempts parsing using the
     major classes of HGVS variants. For slight improvements in
     efficiency, those rules may be invoked directly:
 
       >>> hp.parse_p_variant('NP_012345.6:p.Ala22Trp')
-      SequenceVariant(ac=NP_012345.6, type=p, posedit=Ala22Trp)
+      SequenceVariant(ac=NP_012345.6, type=p, posedits=Ala22Trp)
 
     Similarly, components of the underlying structure may be parsed
     directly as well:
