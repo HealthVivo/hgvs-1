@@ -30,7 +30,11 @@ class PosEditSet( recordtype.recordtype( 'PosEditSet', [('posedits', []), ('unce
     Represents several PosEdits, i.e. multiple changes to one allele.
     """
 
-    def set_uncertain(self):
+    def _set_uncertain(self):
+        """sets the uncertain flag to True; used primarily by the HGVS grammar
+
+        :returns: self
+        """
         self.uncertain = True
         return self
 
