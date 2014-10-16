@@ -7,7 +7,7 @@ from .decorators.deprecated import deprecated
 
 import recordtype
 
-from hgvs.posedit import PosEdit, PosEditSet
+from hgvs.posedit import PosEdit, PosEditList
 from hgvs.exceptions import HGVSError
 
 class SequenceVariant( recordtype.recordtype('SequenceVariant', ['ac','type','posedits']) ):
@@ -27,9 +27,10 @@ class SequenceVariant( recordtype.recordtype('SequenceVariant', ['ac','type','po
                           DeprecationWarning)
             posedits = posedit
         # Accept posedits as a single string or PosEdit object, in which case
-        # we'll automatically convert it to a 1-element PosEditSet.
+        # we'll automatically convert it to a 1-element PosEditList.
+        # FIXME Should this raise a DeprecationWarning?
         if isinstance(posedits, (basestring, PosEdit)):
-            posedits = PosEditSet([posedits])
+            posedits = PosEditList([posedits])
         super(SequenceVariant, self).__init__(ac, type, posedits)
     
     @property
@@ -50,6 +51,7 @@ class SequenceVariant( recordtype.recordtype('SequenceVariant', ['ac','type','po
     def __str__(self):
         return self.to_str()
 
+    # force_brackets is needed by ComplexVariant.__str__.
     def to_str(self, force_brackets=False):
         if self.ac is not None:
             format_str = '{self.ac}:{self.type}.{posedit_str}'
@@ -103,8 +105,8 @@ class ComplexVariant ( recordtype.recordtype('ComplexVariant', ['type', 'variant
             format_str = '{var_type}.{variants_str}'
             if var_ac is not None:
                 format_str = '{var_ac}:' + format_str
-            posedits = [var.to_str_posedits() for var in self.variants]
-            variants_str = self.separator.join(map(str, posedits))
+            poseditlists = [str(var.posedits) for var in self.variants]
+            variants_str = self.separator.join(map(str, poseditlists))
             if len(self.variants) > 1:
                 variants_str = '[' + variants_str + ']'
             return format_str.format(var_ac=var_ac, var_type=var_type,

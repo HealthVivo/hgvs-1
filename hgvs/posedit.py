@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import collections
 import recordtype
 
 class PosEdit( recordtype.recordtype( 'PosEdit', [('pos',None),('edit',None),('uncertain',False)] )):
@@ -25,10 +26,16 @@ class PosEdit( recordtype.recordtype( 'PosEdit', [('pos',None),('edit',None),('u
         self.uncertain = True
         return self
 
-class PosEditSet( recordtype.recordtype( 'PosEditSet', [('posedits', []), ('uncertain', False)] )):
+class PosEditList(
+    collections.MutableSequence,
+    recordtype.recordtype(
+        'PosEditList',
+        [ 'items', ('uncertain', False), ('allele_uncertain', False) ] )):
     """
     Represents several PosEdits, i.e. multiple changes to one allele.
     """
+
+    #def __init__(self, posedits)
 
     def _set_uncertain(self):
         """sets the uncertain flag to True; used primarily by the HGVS grammar
@@ -38,20 +45,27 @@ class PosEditSet( recordtype.recordtype( 'PosEditSet', [('posedits', []), ('unce
         self.uncertain = True
         return self
 
-    def __getitem__(self, i):
-        return self.posedits[i]
+    def __getitem__(self, key):
+        return self.items.__getitem__(key)
 
-    def __setitem__(self, i, value):
-        self.posedits[i] = value
+    def __setitem__(self, key, value):
+        self.items.__setitem__(key, value)
+
+    def __delitem__(self, key):
+        self.items.__delitem__(key)
 
     def __len__(self):
-        return len(self.posedits)
+        return self.items.__len__()
+
+    def insert(self, key, value):
+        self.items.insert(key, value)
 
     def __str__(self):
-        separator = ';'
+        separator = '(;)' if self.allele_uncertain else ';'
+        rv = separator.join(map(str, self.items))
         if self.uncertain:
-            separator = '(' + separator + ')'
-        return separator.join(map(str, self.posedits))
+            rv = '(' + rv + ')'
+        return rv
 
 
 ## <LICENSE>
